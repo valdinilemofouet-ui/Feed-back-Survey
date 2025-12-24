@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Homme page {% endblock %}
+
+{% block content %}
+{% with msg=get_flashed_messages() %}
+    {% if msg%}
+        {% for m in msg %}
+            <div class="alert alert-warning" role="alert">
+                {{ m }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+<h1>Hello {{ content[0] }}</h1>{% endblock %}
