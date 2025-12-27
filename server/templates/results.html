@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<a href="{{ url_for('dashboard') }}">&larr; Retour</a>
+<h2 class="mt-3">Résultats : {{ survey.title }}</h2>
+
+<div class="row">
+    {% for q in survey.questions %}
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <strong>Question {{ loop.index }} :</strong> {{ q.text }} 
+                <span class="badge bg-light text-dark float-end">{{ q.type }}</span>
+            </div>
+            <div class="card-body">
+                
+                {% set q_id_str = q.id | string %}
+                {% if q_id_str in stats %}
+                    {% set q_stats = stats[q_id_str] %}
+                
+                    {% if q.type in ['radio', 'checkbox'] %}
+                        <p class="text-muted small">Total réponses : {{ q_stats.total_answers }}</p>
+                        
+                        {% for option, count in q_stats.counts.items() %}
+                            {% set percent = 0 %}
+                            {% if q_stats.total_answers > 0 %}
+                                {% set percent = (count / q_stats.total_answers * 100) | round(1) %}
+                            {% endif %}
+                            
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ option }}</span>
+                                    <span>{{ count }} votes ({{ percent }}%)</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ percent }}%;"></div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    {% else %}
+                        <ul class="list-group list-group-flush" style="max-height: 200px; overflow-y: auto;">
+                            {% for response in responses %}
+                                {% set ans = response.answers.get(q_id_str) %}
+                                {% if ans %}
+                                    <li class="list-group-item">{{ ans }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                
+                {% else %}
+                    <p class="text-danger">Statistiques non disponibles pour cette question.</p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

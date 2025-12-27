@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Créer un Sondage Avancé</h2>
+
+<div class="mb-3">
+    <label>Titre du sondage</label>
+    <input type="text" id="surveyTitle" class="form-control" placeholder="Ex: Satisfaction Cantine">
+</div>
+
+<div id="questions-container">
+    </div>
+
+<div class="d-flex gap-2 mt-3">
+    <button class="btn btn-outline-primary" onclick="addQuestion('text')">+ Question Texte</button>
+    <button class="btn btn-outline-success" onclick="addQuestion('radio')">+ Choix Unique (Radio)</button>
+    <button class="btn btn-outline-warning" onclick="addQuestion('checkbox')">+ Choix Multiple (Checkbox)</button>
+</div>
+
+<hr>
+<button class="btn btn-primary w-100 btn-lg" onclick="submitSurvey()">Enregistrer le Sondage</button>
+
+<script>
+let questions = [];
+
+function renderQuestions() {
+    const container = document.getElementById('questions-container');
+    container.innerHTML = ''; // Reset
+
+    questions.forEach((q, index) => {
+        let html = `
+            <div class="card mb-3 p-3 border-secondary">
+                <div class="d-flex justify-content-between">
+                    <h5>Question ${index + 1} (${q.type})</h5>
+                    <button class="btn btn-sm btn-danger" onclick="removeQuestion(${index})">X</button>
+                </div>
+                <input type="text" class="form-control mb-2" placeholder="Intitulé de la question..." 
+                       value="${q.text}" onchange="updateQuestionText(${index}, this.value)">
+        `;
+
+        // Si c'est un type à choix, on affiche les options
+        if (q.type === 'radio' || q.type === 'checkbox') {
+            html += `<div class="ms-4"><h6>Options :</h6>`;
+            q.options.forEach((opt, optIndex) => {
+                html += `
+                    <div class="input-group mb-1">
+                        <input type="text" class="form-control form-control-sm" value="${opt}" 
+                               onchange="updateOption(${index}, ${optIndex}, this.value)">
+                        <button class="btn btn-outline-danger btn-sm" onclick="removeOption(${index}, ${optIndex})">x</button>
+                    </div>`;
+            });
+            html += `<button class="btn btn-sm btn-link" onclick="addOption(${index})">+ Ajouter une option</button></div>`;
+        }
+
+        html += `</div>`;
+        container.innerHTML += html;
+    });
+}
+
+function addQuestion(type) {
+    questions.push({
+        id: Date.now(), // ID unique temporaire
+        type: type,
+        text: '',
+        options: (type !== 'text') ? ['Option 1', 'Option 2'] : []
+    });
+    renderQuestions();
+}
+
+function updateQuestionText(idx, val) { questions[idx].text = val; }
+function removeQuestion(idx) { questions.splice(idx, 1); renderQuestions(); }
+
+function addOption(qIdx) { questions[qIdx].options.push("Nouvelle option"); renderQuestions(); }
+function updateOption(qIdx, optIdx, val) { questions[qIdx].options[optIdx] = val; }
+function removeOption(qIdx, optIdx) { questions[qIdx].options.splice(optIdx, 1); renderQuestions(); }
+
+function submitSurvey() {
+    const title = document.getElementById('surveyTitle').value;
+    if(!title) return alert("Le titre est obligatoire");
+
+    fetch('/create-survey', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ title: title, questions: questions })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') window.location.href = data.redirect;
+    });
+}
+</script>
+{% endblock %}

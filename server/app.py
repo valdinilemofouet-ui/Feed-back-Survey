@@ -1,57 +1,37 @@
-from flask import Flask, jsonify, request
-from flask_pymongo import PyMongo
+from flask import Flask, jsonify
 from flask_cors import CORS
-import os
-from dotenv import load_dotenv
-from bson.objectid import ObjectId
+from flask_pymongo import PyMongo
+from config import Config
 
-# 1. Load environment variables (.env)
-load_dotenv()
-
-# 2. Initialize the application
 app = Flask(__name__)
-CORS(app) # Allow React (Frontend) to access this Server
+app.config.from_object(Config)
 
-# 3. Database Configuration
-app.config["MONGO_URI"] = os.getenv("MONGO_URI")
+# Sécurité CORS : On autorise seulement le frontend React (port 3000)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+
 mongo = PyMongo(app)
 
-# Connection verification (Optional, just for testing startup)
-try:
-    mongo.db.command('ping')
-    print("SUCCESS: Connected to MongoDB Atlas!")
-except Exception as e:
-    print(f"ERROR: Could not connect to MongoDB: {e}")
+# --- Gestion Globale des Erreurs ---
+@app.errorhandler(400)
+def bad_request(e):
+    return jsonify({"error": "Requête invalide", "details": str(e.description)}), 400
 
-# --- ROUTES (API Endpoints) ---
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify({"error": "Ressource introuvable"}), 404
 
-@app.route('/', methods=['GET'])
-def home():
-    """Simple health check to see if server is running"""
-    return jsonify({"message": "Flask Survey Builder API is online 🚀"})
+@app.errorhandler(500)
+def server_error(e):
+    return jsonify({"error": "Erreur interne du serveur"}), 500
 
-# Example: Create a survey (Quick test to verify DB write access)
-@app.route('/api/test-create', methods=['POST'])
-def test_create_survey():
-    data = request.json
-    
-    # Data structure (Implicit Schema)
-    # We create a dictionary that represents our survey
-    survey_doc = {
-        "title": data.get("title"),
-        "questions": data.get("questions", []), # Empty list by default
-        "active": True
-    }
-    
-    # Insert into the "forms" collection in MongoDB
-    result = mongo.db.forms.insert_one(survey_doc)
-    
-    # Return success message with the new ID
-    return jsonify({
-        "message": "Survey created successfully!",
-        "id": str(result.inserted_id) # Convert ObjectId to string for JSON compatibility
-    }), 201
+# --- Importation des Routes (Blueprints) ---
+from routes.auth import auth_bp
+from routes.survey import survey_bp
+from routes.public import public_bp
 
-# --- RUN SERVER ---
+app.register_blueprint(auth_bp, url_prefix='/api/auth')
+app.register_blueprint(survey_bp, url_prefix='/api/surveys')
+app.register_blueprint(public_bp, url_prefix='/api/public')
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

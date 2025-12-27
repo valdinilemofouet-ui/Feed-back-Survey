@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<a href="{{ url_for('dashboard') }}" class="btn btn-link">&larr; Annuler</a>
+<h2>Modifier le sondage</h2>
+
+<form method="POST">
+    <div class="mb-3">
+        <label>Titre du sondage</label>
+        <input type="text" name="title" value="{{ survey.title }}" class="form-control" required>
+    </div>
+    
+    <div id="questions-container">
+        <label>Questions</label>
+        {% for q in survey.questions %}
+        <div class="input-group mb-2">
+            <input type="text" name="questions" value="{{ q.text }}" class="form-control" required>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <button type="button" class="btn btn-secondary btn-sm" onclick="addQuestion()">+ Ajouter une question</button>
+    <br><br>
+    <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+</form>
+
+<script>
+function addQuestion() {
+    let container = document.getElementById("questions-container");
+    let input = document.createElement("input");
+    input.type = "text";
+    input.name = "questions";
+    input.className = "form-control mb-2";
+    input.placeholder = "Nouvelle question...";
+    container.appendChild(input);
+}
+</script>
+{% endblock %}
