@@ -6,25 +6,30 @@ from config import Config
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Sécurité CORS : On autorise seulement le frontend React (port 3000)
+# CORS Security: Allow only React frontend (port 3000)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
 mongo = PyMongo(app)
 
-# --- Gestion Globale des Erreurs ---
+# --- Global Error Handling ---
 @app.errorhandler(400)
 def bad_request(e):
-    return jsonify({"error": "Requête invalide", "details": str(e.description)}), 400
+    # Returns a JSON error instead of HTML
+    return jsonify({"error": "Invalid request", "details": str(e.description)}), 400
 
 @app.errorhandler(404)
 def not_found(e):
-    return jsonify({"error": "Ressource introuvable"}), 404
+    return jsonify({"error": "Resource not found"}), 404
+
+@app.errorhandler(403)
+def forbidden(e):
+    return jsonify({"error": "Access forbidden"}), 403
 
 @app.errorhandler(500)
 def server_error(e):
-    return jsonify({"error": "Erreur interne du serveur"}), 500
+    return jsonify({"error": "Internal server error"}), 500
 
-# --- Importation des Routes (Blueprints) ---
+# --- Register Blueprints (Routes) ---
 from routes.auth import auth_bp
 from routes.survey import survey_bp
 from routes.public import public_bp

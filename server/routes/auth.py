@@ -13,14 +13,14 @@ def get_db():
 @auth_bp.route('/register', methods=['POST'])
 def register():
     try:
-        # Validation automatique via Pydantic
+        # Automatic validation via Pydantic
         data = UserRegisterSchema(**request.json)
     except ValidationError as e:
-        return jsonify({"error": "Données invalides", "details": e.errors()}), 400
+        return jsonify({"error": "Invalid data", "details": e.errors()}), 400
 
     db = get_db()
     if db.users.find_one({'email': data.email}):
-        return jsonify({"error": "Cet email est déjà utilisé"}), 409
+        return jsonify({"error": "Email already registered"}), 409
 
     hashed_pw = generate_password_hash(data.password)
     
@@ -29,26 +29,26 @@ def register():
         'email': data.email,
         'password': hashed_pw,
         'created_at': datetime.datetime.utcnow(),
-        'role': 'user' # Pourrait être 'admin' plus tard
+        'role': 'user'
     }
     
     db.users.insert_one(user_doc)
-    return jsonify({"message": "Compte créé avec succès"}), 201
+    return jsonify({"message": "Account created successfully"}), 201
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
     try:
         data = UserLoginSchema(**request.json)
     except ValidationError:
-        return jsonify({"error": "Format invalide"}), 400
+        return jsonify({"error": "Invalid format"}), 400
 
     db = get_db()
     user = db.users.find_one({'email': data.email})
 
     if not user or not check_password_hash(user['password'], data.password):
-        return jsonify({"error": "Email ou mot de passe incorrect"}), 401
+        return jsonify({"error": "Invalid email or password"}), 401
 
-    # Création du Token JWT
+    # Create JWT Token
     token_payload = {
         'user_id': str(user['_id']),
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
