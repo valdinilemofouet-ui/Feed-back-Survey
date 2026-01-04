@@ -12,6 +12,7 @@ import {
   ExternalLink 
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import './Dashboard.css';
 
 const Dashboard = () => {
   const [surveys, setSurveys] = useState([]);

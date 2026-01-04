@@ -66,3 +66,20 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo-image {
+  height: 50px;  /* Adjust size as needed */
+  width: auto;
+  object-fit: contain;
+}
+.navbar {
+  background-color: #773d3d;
+  padding: 10px 20px;
+}

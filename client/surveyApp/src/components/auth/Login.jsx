@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Mail, Lock } from 'lucide-react';
+import './Login.css';  //  for joining with the login css file
 
 const Login = () => {
   const [formData, setFormData] = useState({

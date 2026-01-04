@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { LogOut, User, Home, PlusCircle } from 'lucide-react';
+import aimsLogo from '../../assets/AIMS_logo.png';  // Import the logo
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -15,7 +16,8 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="nav-container">
         <Link to="/" className="nav-logo">
-          📊 Survey App
+          <img src={aimsLogo} alt="AIMS Logo" className="logo-image" />
+          <span>Survey App</span>
         </Link>
 
         {isAuthenticated ? (
