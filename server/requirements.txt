@@ -8,3 +8,6 @@ flask_pymongo
 flask-bcrypt
 flask-jwt-extended
 pydantic
+pydantic[email]
+email-validator
+
