@@ -3,16 +3,44 @@
    ======================================== */
 
 /* Container with gradient background */
+/* ========================================
+   ENLEVER TOUTES LES MARGES
+   ======================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* Container avec background COMPLET */
 .auth-container {
-  min-height: 100vh;
+  position: fixed;  /* ← Très important! */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(26, 23, 23, 0.5)), 
-                    url('../../assets/login-background.jpeg');
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+    url('../../assets/login-background.jpeg');
   background-size: cover;
-  background-position: center;
+  background-position: center center;
+  background-repeat: no-repeat;
   padding: 20px;
+  overflow-y: auto;
 }
 
 /* Login Card - Semi-transparent with blur effect */

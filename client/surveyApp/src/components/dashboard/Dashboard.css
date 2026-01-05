@@ -6,8 +6,7 @@
   min-height: 100vh;
   background-image: 
     linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),  /* Overlay sombre */
-    url('../../assets/logo-dashboard.jpeg');  /* Ton image */
-  background-size: cover;
+    url('../../assets/logo-dashboard.jpeg');  
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -26,8 +25,8 @@
 .dashboard-header h1 {
   font-size: 32px;
   font-weight: 700;
-  color: white;  /* Texte blanc sur fond coloré */
-  margin-bottom: 8px;
+  color: black;  /* Texte blanc sur fond coloré */
+  margin-bottom: 10px;
 }
 
 .dashboard-header p {
