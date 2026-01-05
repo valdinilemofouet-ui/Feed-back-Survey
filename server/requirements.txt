@@ -5,5 +5,6 @@ pymongo
 gunicorn
 dnspython
 flask_pymongo
-validation
-jwt
+flask-bcrypt
+flask-jwt-extended
+pydantic
