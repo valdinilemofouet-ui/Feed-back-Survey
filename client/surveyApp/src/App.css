@@ -12,12 +12,20 @@
   --danger: #ef4444;
   --secondary: #6b7280;
   --bg-primary: #ffffff;
-  --bg-secondary: #e8f2fd;
+  --bg-secondary: #f1fbfe;
   --text-primary: #111827;
   --text-secondary: #6b7280;
   --border: #e5e7eb;
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    min-height: 100%; 
+    height: auto; 
+    
+    overflow-x: hidden;
+    /* On garde le scroll fluide */
+    scroll-behavior: smooth;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
 }
 
 html, body {
@@ -560,32 +568,118 @@ body {
   padding: 1rem;
 }
 
-.survey-header {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  padding: 3rem 2rem;
-  border-radius: 1rem;
-  box-shadow: var(--shadow-lg);
-  margin-bottom: 2rem;
-  text-align: center;
-  color: white;
+/* --- DEBUT MODIFICATION SURVEYS --- */
+
+.surveys-grid {
+  display: grid;
+  /* On agrandit un peu la largeur min pour donner plus de place aux boutons (300px -> 340px) */
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
 }
 
-.survey-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  font-weight: 700;
-}
-
-.survey-header .survey-description {
-  font-size: 1.125rem;
-  opacity: 0.9;
-  color: white;
-}
-
-.survey-questions {
+.survey-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  transition: all 0.3s ease;
+  
+  /* Animation d'apparition */
+  animation: fadeInUp 0.5s ease-out backwards;
+  
+  /* Assure une hauteur minimale pour l'uniformité */
+  min-height: 220px; 
+}
+
+.survey-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary);
+}
+
+.survey-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.survey-card-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  /* Coupe le texte s'il est trop long */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+.survey-description {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  
+  /* Limite la description à 2 lignes pour garder les cartes égales */
+  display: -webkit-box;
+  --webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex-grow: 1; /* Pousse les boutons vers le bas */
+}
+
+.survey-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--bg-secondary);
+}
+
+/* --- CORRECTION DES BOUTONS --- */
+
+.survey-actions {
+  display: flex;
+  flex-wrap: nowrap; /* Essaie de tout garder sur une ligne */
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: auto; /* Colle les boutons tout en bas */
+  width: 100%;
+}
+
+/* Style spécifique pour les boutons DANS les cartes (plus compacts) */
+.survey-actions .btn {
+  padding: 0.4rem 0.75rem; /* Moins de padding */
+  font-size: 0.85rem;       /* Texte plus petit */
+  flex-grow: 1;             /* Les boutons se partagent l'espace */
+  justify-content: center;
+  white-space: nowrap;      /* Empêche le texte du bouton de se couper */
+}
+
+/* Le bouton supprimer (rouge) ne doit pas grandir, il reste carré */
+.survey-actions .btn-danger {
+  flex-grow: 0;
+  min-width: 36px;
+  padding: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive : Si l'écran est petit, on autorise le passage à la ligne proprement */
+@media (max-width: 480px) {
+  .survey-actions {
+    flex-wrap: wrap;
+  }
+  .survey-actions .btn {
+    flex-grow: 1;
+    width: 48%; /* 2 boutons par ligne */
+  }
 }
 
 .question-block {
@@ -1384,4 +1478,153 @@ body {
 /* Au cas où vous auriez une div parente "main-content" */
 .main-content {
   padding-top: 90px !important;
+}
+
+/* --- ANIMATIONS & KEYFRAMES --- */
+
+/* Apparition douce du bas vers le haut */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apparition simple (Fade in) */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Effet de "pop" pour les badges ou boutons */
+@keyframes popIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Animation de chargement fluide (Shimmer) pour les placeholders si besoin */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.main-content, .auth-card, .restriction-card {
+  /* Ajout de l'animation d'entrée */
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Mettre à jour .stat-card */
+.stat-card {
+  background: var(--bg-primary);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  
+  /* ANIMATION */
+  animation: fadeInUp 0.6s ease-out backwards; /* Backwards garde l'état initial (invisible) */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px); /* La carte monte un peu */
+  box-shadow: var(--shadow-lg);
+}
+
+/* Mettre à jour .survey-card */
+.survey-card {
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--bg-primary); /* Assurer le fond blanc */
+  
+  /* ANIMATION */
+  animation: fadeInUp 0.6s ease-out backwards;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Transition très fluide */
+}
+
+.survey-card:hover {
+  transform: translateY(-8px) scale(1.01); /* Monte et grossit très légèrement */
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  border-color: var(--primary); /* La bordure devient bleue */
+}
+/* Délais d'animation pour effet cascade sur les grilles */
+.stats-grid .stat-card:nth-child(1), .surveys-grid .survey-card:nth-child(1) { animation-delay: 0.1s; }
+.stats-grid .stat-card:nth-child(2), .surveys-grid .survey-card:nth-child(2) { animation-delay: 0.2s; }
+.stats-grid .stat-card:nth-child(3), .surveys-grid .survey-card:nth-child(3) { animation-delay: 0.3s; }
+.stats-grid .stat-card:nth-child(4), .surveys-grid .survey-card:nth-child(4) { animation-delay: 0.4s; }
+/* ... vous pouvez en ajouter plus si nécessaire */
+
+/* Mettre à jour .btn */
+.btn {
+  /* ... vos styles existants ... */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:active {
+  transform: scale(0.97); /* Effet de clic enfoncé */
+}
+
+/* Mettre à jour les inputs et textareas */
+.form-group input,
+.form-group textarea,
+.form-group select,
+.question-block textarea,
+.question-block select {
+  /* ... vos styles existants ... */
+  transition: all 0.3s ease;
+  border: 1px solid var(--border);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.question-block textarea:focus {
+  transform: translateY(-2px); /* Léger soulèvement au focus */
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); /* Ombre bleue douce */
+  border-color: var(--primary);
+}
+
+/* Mettre à jour .question-card (Dans le créateur de formulaire) */
+.question-card {
+  /* ... styles existants ... */
+  animation: fadeInUp 0.4s ease-out; /* Nouvelle question glisse vers le haut */
+  border-left: 4px solid transparent; /* Prépare une bordure à gauche */
+  transition: all 0.3s ease;
+}
+
+.question-card:hover {
+  border-left-color: var(--primary); /* Barre bleue à gauche au survol */
+  box-shadow: var(--shadow-lg);
+}
+
+/* Options (Radio/Checkbox) */
+.radio-option, .checkbox-option {
+  /* ... styles existants ... */
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.radio-option:hover, .checkbox-option:hover {
+  transform: translateX(5px); /* Se décale légèrement vers la droite */
+  background: var(--bg-secondary);
+}
+
+.rating-number {
+  /* ... styles existants ... */
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Effet rebond */
+}
+
+.rating-option input:checked + .rating-number {
+  transform: scale(1.1); /* Grossit quand sélectionné */
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
 }
