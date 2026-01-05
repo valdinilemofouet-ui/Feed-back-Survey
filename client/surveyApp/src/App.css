@@ -11,13 +11,24 @@
   --warning: #f59e0b;
   --danger: #ef4444;
   --secondary: #6b7280;
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
+  
+  /* RECTIFICATION : On passe à 0.85 pour une meilleure lisibilité */
+  --bg-primary: rgba(255, 255, 255, 0.85); 
+  
+  --bg-secondary: url('./assets/found.png'); 
+  
   --text-primary: #111827;
   --text-secondary: #6b7280;
-  --border: #e5e7eb;
+  --border: #e5e7eb; /* On remet une bordure solide pour plus de structure */
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+/* L'effet reste classe mais beaucoup plus lisible maintenant */
+.bg-primary-element { 
+  background-color: var(--bg-primary);
+  backdrop-filter: blur(8px); /* Un flou légèrement plus doux */
+  -webkit-backdrop-filter: blur(8px);
 }
 
 html, body {
@@ -934,7 +945,7 @@ body {
 
 .response-item {
   padding: 1rem;
-  background: var(--bg-secondary);
+  background: rgba(255, 255, 255, 0.5) !important;
   border-radius: 0.5rem;
   margin-bottom: 0.75rem;
   font-style: italic;
