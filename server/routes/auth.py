@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
+from functools import wraps
 from validation import UserRegisterSchema, UserLoginSchema, ValidationError
 
 auth_bp = Blueprint('auth', __name__)
@@ -10,7 +11,47 @@ def get_db():
     from app import mongo
     return mongo.db
 
+# --- Helper Decorator ---
+def anonymous_required(f):
+    """
+    Decorator to ensure the user is NOT logged in.
+    If a valid token is found, return an error.
+    """
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        
+        # Check for Authorization header
+        if 'Authorization' in request.headers:
+            auth_header = request.headers['Authorization']
+            if auth_header and auth_header.startswith('Bearer '):
+                token = auth_header.split(" ")[1]
+        
+        if token:
+            try:
+                # Attempt to decode the token
+                jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+                
+                # If decoding is successful, the user is already authenticated
+                return jsonify({
+                    "error": "You are already logged in.",
+                    "message": "Please logout to access this resource."
+                }), 403
+                
+            except jwt.ExpiredSignatureError:
+                # Token expired, allow them to proceed (to login again)
+                pass
+            except jwt.InvalidTokenError:
+                # Token invalid, allow them to proceed
+                pass
+                
+        return f(*args, **kwargs)
+    return decorated
+
+# --- Routes ---
+
 @auth_bp.route('/register', methods=['POST'])
+@anonymous_required  # <--- Prevents registered users from creating new accounts while logged in
 def register():
     try:
         # Automatic validation via Pydantic
@@ -36,6 +77,7 @@ def register():
     return jsonify({"message": "Account created successfully"}), 201
 
 @auth_bp.route('/login', methods=['POST'])
+@anonymous_required  # <--- Prevents logged-in users from logging in again
 def login():
     try:
         data = UserLoginSchema(**request.json)
