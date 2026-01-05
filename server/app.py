@@ -7,8 +7,9 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 # CORS Security: Allow only React frontend (port 3000)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
-
+CORS(app, resources={r"/*": {"origins": "*"}}, 
+     allow_headers=["Content-Type", "Authorization"], 
+     methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"])
 mongo = PyMongo(app)
 
 # --- Global Error Handling ---
