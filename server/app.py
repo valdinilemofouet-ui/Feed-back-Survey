@@ -39,4 +39,4 @@ app.register_blueprint(survey_bp, url_prefix='/api/surveys')
 app.register_blueprint(public_bp, url_prefix='/api/public')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(port=5000)

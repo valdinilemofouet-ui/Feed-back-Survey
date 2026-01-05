@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/AuthContext';
 // Components
 import Navbar from './components/layout/Navbar';
 import PrivateRoute from './components/layout/PrivateRoute';
+import PublicRoute from './components/layout/PublicRoute'; // <--- NOUVEL IMPORT
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
@@ -23,13 +24,25 @@ function App() {
           <Navbar />
           <main className="main-content">
             <Routes>
-              {/* Public Routes */}
+              {/* --- Routes Accessibles à tous (Public) --- */}
               <Route path="/" element={<Navigate to="/dashboard" />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
               <Route path="/survey/:surveyId" element={<TakeSurvey />} />
 
-              {/* Protected Routes */}
+              {/* --- Routes "Anonymes" (Accessibles UNIQUEMENT si NON connecté) --- */}
+              {/* Si l'utilisateur est déjà connecté, il sera redirigé vers le Dashboard */}
+              <Route path="/login" element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              } />
+              
+              <Route path="/register" element={
+                <PublicRoute>
+                  <Register />
+                </PublicRoute>
+              } />
+
+              {/* --- Routes Protégées (Accessibles UNIQUEMENT si connecté) --- */}
               <Route path="/dashboard" element={
                 <PrivateRoute>
                   <Dashboard />
@@ -54,7 +67,7 @@ function App() {
                 </PrivateRoute>
               } />
 
-              {/* Fallback */}
+              {/* --- Fallback (Erreur 404) --- */}
               <Route path="*" element={<Navigate to="/dashboard" />} />
             </Routes>
           </main>
