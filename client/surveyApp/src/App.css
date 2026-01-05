@@ -1624,3 +1624,122 @@ body {
   transform: scale(1.1); /* Grossit quand sélectionné */
   box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
 }
+
+
+
+/* ========================================
+   BREAKPOINTS ADDITIONNELS
+   ======================================== */
+
+/* Petits téléphones (320px - 480px) */
+@media (max-width: 480px) {
+  html {
+    font-size: 12px; /* Encore plus petit */
+  }
+  
+  .survey-actions {
+    flex-direction: column; /* Force empilage vertical */
+  }
+  
+  .survey-actions .btn {
+    width: 100%;
+    min-width: unset;
+  }
+  
+  .auth-title {
+    font-size: 1.5rem;
+  }
+  
+  .restriction-card {
+    padding: 1.5rem;
+  }
+}
+
+/* Tablettes portrait (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  html {
+    font-size: 1px;
+  }
+  
+  .surveys-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablettes paysage et petits écrans (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  html {
+    font-size: 15px;
+  }
+  
+  .main-content {
+    padding: 1.5rem;
+  }
+  
+  .surveys-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+/* Grands écrans (1025px+) */
+@media (min-width: 1025px) {
+  html {
+    font-size: 17px; /* Taille normale */
+  }
+  
+  .navbar {
+    height: 70px;
+  }
+  
+  body {
+    padding-top: 70px;
+  }
+  
+  .main-content {
+    padding: 2rem;
+  }
+  
+  .surveys-grid {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  
+  .survey-actions .btn {
+    font-size: 0.875rem;
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+  }
+}
+
+/* ========================================
+   CORRECTIONS TEXTE
+   ======================================== */
+
+/* Permet le retour à la ligne partout */
+.question-text,
+.survey-description,
+.response-item,
+.info-content p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Touch targets minimum 44x44px */
+.btn,
+.btn-icon,
+.nav-link,
+.form-group input,
+.form-group select,
+.form-group textarea {
+  min-height: 44px;
+}
